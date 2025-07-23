@@ -59,10 +59,10 @@ export class Trestle implements INodeType {
 				},
 				options: [
 					{
-						name: 'Validate Phone Number',
+						name: 'Validate',
 						value: 'validate',
-						description: 'Validates phone numbers from input data',
-						action: 'Validate phone numbers',
+						description: 'Retrieve phone metadata and activity scores',
+						action: 'Validate phone number',
 					},
 				],
 				default: 'validate',
@@ -80,7 +80,7 @@ export class Trestle implements INodeType {
 				},
 				options: [
 					{
-						name: 'Verify Contact',
+						name: 'Verify',
 						value: 'verify',
 						description: 'Verify and grade phone, email, and address information',
 						action: 'Verify contact information',
@@ -100,6 +100,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'phone',
+				placeholder: 'e.g. phone',
 				description: 'Field name containing phone numbers in input data',
 			},
 			{
@@ -112,7 +113,8 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The ISO-3166 alpha-2 country code of the phone number (e.g., US)',
+				placeholder: 'e.g. US',
+				description: 'ISO-3166 alpha-2 country code of the phone number',
 			},
 			// Real Contact Fields
 			{
@@ -126,6 +128,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'name',
+				placeholder: 'e.g. Nathan Smith',
 				description: 'Field name containing contact names in input data',
 			},
 			{
@@ -139,6 +142,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'phone',
+				placeholder: 'e.g. +1234567890',
 				description: 'Field name containing phone numbers in input data',
 			},
 			{
@@ -151,6 +155,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'email',
+				placeholder: 'e.g. nathan@example.com',
 				description: 'Field name containing email addresses in input data (optional)',
 			},
 			{
@@ -163,6 +168,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'ip',
+				placeholder: 'e.g. 192.168.1.100',
 				description: 'Field name containing IP addresses in input data (optional)',
 			},
 			{
@@ -175,6 +181,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'address',
+				placeholder: 'e.g. 123 Main St',
 				description: 'Field name containing street addresses in input data (optional)',
 			},
 			{
@@ -187,6 +194,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'city',
+				placeholder: 'e.g. San Francisco',
 				description: 'Field name containing city names in input data (optional)',
 			},
 			{
@@ -199,6 +207,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'state',
+				placeholder: 'e.g. CA',
 				description: 'Field name containing state codes in input data (optional)',
 			},
 			{
@@ -211,6 +220,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'postal_code',
+				placeholder: 'e.g. 94103',
 				description: 'Field name containing postal codes in input data (optional)',
 			},
 			{

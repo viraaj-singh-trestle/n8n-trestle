@@ -1,14 +1,16 @@
 {
   "name": "n8n-nodes-trestle",
   "version": "0.1.0",
-  "description": "An n8n node for the Trestle Phone Validation API.",
+  "description": "An n8n node for the Trestle Phone Validation and Contact Verification APIs.",
   "keywords": [
     "n8n-community-node-package",
     "trestle",
-    "phone validation"
+    "phone validation",
+    "contact verification",
+    "real contact"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/trestle/n8n-nodes-trestle#readme",
   "author": {
     "name": "Trestle",
     "email": "support@trestleiq.com"
