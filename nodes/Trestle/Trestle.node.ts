@@ -59,10 +59,10 @@ export class Trestle implements INodeType {
 				},
 				options: [
 					{
-						name: 'Validate',
+						name: 'Validate Phone Number',
 						value: 'validate',
-						description: 'Retrieve phone metadata and activity scores',
-						action: 'Validate phone number',
+						description: 'Validates phone numbers from input data',
+						action: 'Validate phone numbers',
 					},
 				],
 				default: 'validate',
@@ -80,7 +80,7 @@ export class Trestle implements INodeType {
 				},
 				options: [
 					{
-						name: 'Verify',
+						name: 'Verify Contact',
 						value: 'verify',
 						description: 'Verify and grade phone, email, and address information',
 						action: 'Verify contact information',
@@ -100,7 +100,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'phone',
-				placeholder: 'e.g. phone',
 				description: 'Field name containing phone numbers in input data',
 			},
 			{
@@ -113,8 +112,7 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: '',
-				placeholder: 'e.g. US',
-				description: 'ISO-3166 alpha-2 country code of the phone number',
+				description: 'The ISO-3166 alpha-2 country code of the phone number (e.g., US)',
 			},
 			// Real Contact Fields
 			{
@@ -128,7 +126,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'name',
-				placeholder: 'e.g. Nathan Smith',
 				description: 'Field name containing contact names in input data',
 			},
 			{
@@ -142,7 +139,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'phone',
-				placeholder: 'e.g. +1234567890',
 				description: 'Field name containing phone numbers in input data',
 			},
 			{
@@ -155,7 +151,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'email',
-				placeholder: 'e.g. nathan@example.com',
 				description: 'Field name containing email addresses in input data (optional)',
 			},
 			{
@@ -168,7 +163,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'ip',
-				placeholder: 'e.g. 192.168.1.100',
 				description: 'Field name containing IP addresses in input data (optional)',
 			},
 			{
@@ -181,7 +175,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'address',
-				placeholder: 'e.g. 123 Main St',
 				description: 'Field name containing street addresses in input data (optional)',
 			},
 			{
@@ -194,7 +187,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'city',
-				placeholder: 'e.g. San Francisco',
 				description: 'Field name containing city names in input data (optional)',
 			},
 			{
@@ -207,7 +199,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'state',
-				placeholder: 'e.g. CA',
 				description: 'Field name containing state codes in input data (optional)',
 			},
 			{
@@ -220,7 +211,6 @@ export class Trestle implements INodeType {
 					},
 				},
 				default: 'postal_code',
-				placeholder: 'e.g. 94103',
 				description: 'Field name containing postal codes in input data (optional)',
 			},
 			{
@@ -260,14 +250,22 @@ export class Trestle implements INodeType {
 			const operation = this.getNodeParameter('operation', i);
 
 			try {
-				if (resource === 'phoneValidation' && operation === 'validate') {
-					const phoneField = this.getNodeParameter('phoneField', i) as string;
-					const phone = items[i].json[phoneField] as string;
+				if (resource === 'phoneValidation') {
+					let phone: string;
 					
-					if (!phone) {
-						throw new NodeOperationError(this.getNode(), `Phone number not found in field '${phoneField}'`, {
-							itemIndex: i,
-						});
+					if (operation === 'validate') {
+						phone = this.getNodeParameter('phone', i) as string;
+					} else if (operation === 'batchValidate') {
+						const phoneField = this.getNodeParameter('phoneField', i) as string;
+						phone = items[i].json[phoneField] as string;
+						
+						if (!phone) {
+							throw new NodeOperationError(this.getNode(), `Phone number not found in field '${phoneField}'`, {
+								itemIndex: i,
+							});
+						}
+					} else {
+						continue;
 					}
 
 					// Phone Validation API call
@@ -290,7 +288,6 @@ export class Trestle implements INodeType {
 						},
 					};
 
-
 					const phoneResponse = await this.helpers.request(phoneOptions);
 					const phoneApiResponse = typeof phoneResponse === 'string' ? JSON.parse(phoneResponse) : phoneResponse;
 
@@ -300,57 +297,44 @@ export class Trestle implements INodeType {
 					});
 
 				} else if (resource === 'realContact' && operation === 'verify') {
-					// Real Contact API call - get data from input fields
-					const nameField = this.getNodeParameter('nameField', i) as string;
-					const phoneField = this.getNodeParameter('phoneField', i) as string;
-					const emailField = this.getNodeParameter('emailField', i) as string;
-					const ipAddressField = this.getNodeParameter('ipAddressField', i) as string;
-					const addressField = this.getNodeParameter('addressField', i) as string;
-					const cityField = this.getNodeParameter('cityField', i) as string;
-					const stateField = this.getNodeParameter('stateField', i) as string;
-					const postalCodeField = this.getNodeParameter('postalCodeField', i) as string;
+					// Real Contact API call
+					const name = this.getNodeParameter('name', i) as string;
+					const phone = this.getNodeParameter('phone', i) as string;
+					const email = this.getNodeParameter('email', i) as string;
+					const ipAddress = this.getNodeParameter('ipAddress', i) as string;
+					const address = this.getNodeParameter('address', i) as string;
+					const city = this.getNodeParameter('city', i) as string;
+					const state = this.getNodeParameter('state', i) as string;
+					const postalCode = this.getNodeParameter('postalCode', i) as string;
 					const includeEmailDeliverability = this.getNodeParameter('includeEmailDeliverability', i) as boolean;
 					const includeLitigatorCheck = this.getNodeParameter('includeLitigatorCheck', i) as boolean;
 
-					const name = items[i].json[nameField] as string;
-					const phone = items[i].json[phoneField] as string;
-
-					if (!name || !phone) {
-						throw new NodeOperationError(this.getNode(), `Required fields not found: name in '${nameField}' or phone in '${phoneField}'`, {
-							itemIndex: i,
-						});
-					}
-
-					// Build query parameters for GET request
-					let queryString = `name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`;
-
-					const email = items[i].json[emailField] as string;
-					const ipAddress = items[i].json[ipAddressField] as string;
-					const address = items[i].json[addressField] as string;
-					const city = items[i].json[cityField] as string;
-					const state = items[i].json[stateField] as string;
-					const postalCode = items[i].json[postalCodeField] as string;
-
-					if (email) queryString += `&email=${encodeURIComponent(email)}`;
-					if (ipAddress) queryString += `&ip_address=${encodeURIComponent(ipAddress)}`;
-					if (address) queryString += `&address.street_line_1=${encodeURIComponent(address)}`;
-					if (city) queryString += `&address.city=${encodeURIComponent(city)}`;
-					if (state) queryString += `&address.state_code=${encodeURIComponent(state)}`;
-					if (postalCode) queryString += `&address.postal_code=${encodeURIComponent(postalCode)}`;
-
-					const addons = [];
-					if (includeEmailDeliverability) addons.push('email_checks_deliverability');
-					if (includeLitigatorCheck) addons.push('litigator_checks');
-					if (addons.length > 0) queryString += `&add_ons=${encodeURIComponent(addons.join(','))}`;
-
-					const contactOptions = {
-						method: 'GET' as const,
-						url: `https://api.trestleiq.com/1.1/real_contact?${queryString}`,
-						headers: {
-							'x-api-key': credentials.apiKey as string,
-						},
+					const body: any = {
+						name,
+						phone,
 					};
 
+					if (email) body.email = email;
+					if (ipAddress) body.ip = ipAddress;
+					if (address) body.address = address;
+					if (city) body.city = city;
+					if (state) body.state = state;
+					if (postalCode) body.postal_code = postalCode;
+
+					const addons = [];
+					if (includeEmailDeliverability) addons.push('email_deliverability');
+					if (includeLitigatorCheck) addons.push('litigator_check');
+					if (addons.length > 0) body.addons = addons.join(',');
+
+					const contactOptions = {
+						method: 'POST' as const,
+						url: 'https://api.trestleiq.com/1.1/real_contact',
+						headers: {
+							'x-api-key': credentials.apiKey as string,
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(body),
+					};
 
 					const contactResponse = await this.helpers.request(contactOptions);
 					const contactApiResponse = typeof contactResponse === 'string' ? JSON.parse(contactResponse) : contactResponse;
@@ -365,6 +349,7 @@ export class Trestle implements INodeType {
 					returnData.push({
 						json: {
 							error: error.message,
+
 						},
 						error,
 						pairedItem: i,

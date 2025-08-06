@@ -19,8 +19,8 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-### Phone Validation
-- **Validate Phone Number** - Validates phone numbers from input data and returns comprehensive metadata including:
+### Phone Validation (International)
+- **Validate Phone Number** - Validates international phone numbers from input data and returns comprehensive metadata including:
   - Activity score (0-100) indicating phone connectivity
   - Line type (Mobile, Landline, VoIP, etc.)
   - Carrier information
@@ -28,10 +28,10 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
   - Prepaid status
   - Optional litigator checks
 
-### Real Contact
+### Real Contact (US Only)
 - **Verify Contact** - Comprehensive contact verification that validates and grades:
   - Phone numbers with activity scoring
-  - Email addresses with deliverability checks
+  - Email addresses with deliverability checks and age scoring
   - Physical addresses
   - Name matching across all contact points
   - Contact quality grading (A-F scale)
@@ -72,9 +72,9 @@ This node is compatible with n8n version 1.0.0 and above.
    - **Email Field** - Email addresses
    - **Address Field** - Street addresses
    - **City Field**, **State Field**, **Postal Code Field** - Address components
-   - **IP Address Field** - IP addresses for fraud detection
 6. Enable additional checks:
    - **Email Deliverability** - Verify email deliverability (additional cost)
+   - **Email Age Score** - Get email age scoring (additional cost)
    - **Litigator Check** - Check for litigation risk (additional cost)
 7. Execute the node for comprehensive contact verification and grading
 
@@ -85,7 +85,7 @@ This node is compatible with n8n version 1.0.0 and above.
 - **Comprehensive Validation** - Phone, email, and address verification in one API
 - **Risk Assessment** - Fraud detection and litigator risk identification
 - **Quality Grading** - A-F contact quality scores for lead qualification
-- **Global Coverage** - International phone validation and contact verification
+- **Global Coverage** - International phone validation; US-only contact verification
 
 ## Resources
 
