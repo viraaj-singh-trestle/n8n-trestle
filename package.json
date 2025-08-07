@@ -10,14 +10,9 @@
     "real contact"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/trestle/n8n-nodes-trestle#readme",
   "author": {
     "name": "Trestle",
     "email": "support@trestleiq.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trestle/n8n-nodes-trestle.git"
   },
   "engines": {
     "node": ">=20.15"
